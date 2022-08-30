@@ -48,7 +48,7 @@ do
 		return self:constructor(...) or self
 	end
 	function Camera:constructor()
-		self.position = Vector3.new(0, 1, -4)
+		self.position = Vector3.new(0, 1, -2)
 		self.rotation = Vector3.new()
 		self.focalLength = 0.6
 	end
@@ -120,7 +120,7 @@ do
 	function Renderer:render()
 		-- clear frame
 		frame:ClearAllChildren()
-		local descendants = frame:GetDescendants()
+		local descendants = self.world:GetDescendants()
 		local renderVertices = {}
 		local _descendants = descendants
 		local _arg0 = function(v)
@@ -130,7 +130,7 @@ do
 				local _arg0_1 = function(vertice)
 					local _renderVertices = renderVertices
 					local _cFrame = part.CFrame
-					local _cFrame_1 = CFrame.new((size.X / 2) * vertice[2], (size.Y / 2) * vertice[3], (size.Z / 2) * vertice[4])
+					local _cFrame_1 = CFrame.new(size.X * vertice[1], size.Y * vertice[2], size.Z * vertice[3])
 					local _position = (_cFrame * _cFrame_1).Position
 					table.insert(_renderVertices, _position)
 				end
@@ -159,7 +159,15 @@ local renderer = Renderer.new(camera)
 local world_part = Instance.new("Part")
 world_part.Size = Vector3.one
 world_part.Parent = renderer.world
-renderer:render()
+local a = 0
+game:GetService("RunService").Stepped:Connect(function()
+	a = a + 0.01
+	if a >= 1 then
+		a = 0
+	end
+	world_part.CFrame = CFrame.new(a, a, a)
+	renderer:render()
+end)
 return {
 	part = part,
 }

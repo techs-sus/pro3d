@@ -3,7 +3,7 @@ const container = new Instance("WorldModel");
 const part = new Instance("Part");
 const gui = new Instance("SurfaceGui");
 const frame = new Instance("Frame");
-(gui as unknown as { Face: Enum.NormalId }).Face = Enum.NormalId.Back;
+gui.Face = Enum.NormalId.Back;
 gui.Adornee = part;
 gui.SizingMode = Enum.SurfaceGuiSizingMode.FixedSize;
 gui.CanvasSize = new Vector2(100, 100);
@@ -28,7 +28,7 @@ part.Parent = container;
 container.Parent = script;
 
 class Camera {
-	position: Vector3 = new Vector3(0, 1, -4);
+	position: Vector3 = new Vector3(0, 1, -2);
 	rotation: Vector3 = new Vector3();
 	focalLength: number = 0.6;
 	public project(x: number, y: number, z: number, pos: Vector3, rot: Vector3): [number, number] {
@@ -98,21 +98,20 @@ class Renderer {
 		// clear frame
 
 		frame.ClearAllChildren();
-		let descendants = frame.GetDescendants();
+		let descendants = this.world.GetDescendants();
 		let renderVertices: Vector3[] = [];
 		descendants.forEach((v) => {
 			if (v.IsA("Part")) {
 				let size = v.Size;
 				vertices.forEach((vertice) => {
 					renderVertices.push(
-						part.CFrame.mul(new CFrame((size.X / 2) * vertice[1], (size.Y / 2) * vertice[2], (size.Z / 2) * vertice[3]))
-							.Position,
+						part.CFrame.mul(new CFrame(size.X * vertice[0], size.Y * vertice[1], size.Z * vertice[2])).Position,
 					);
 				});
 			}
 		});
 		renderVertices.forEach((v) => {
-			let [x, y] = this.camera.project(v.X, v.Y, v.Z, Vector3.zero, Vector3.zero);
+			let [x, y] = this.camera.project(0, 0, 0, v, Vector3.zero);
 			this.point(x, y);
 		});
 	}
@@ -123,6 +122,12 @@ const renderer = new Renderer(camera);
 let world_part = new Instance("Part");
 world_part.Size = Vector3.one;
 world_part.Parent = renderer.world;
-renderer.render();
+let a = 0;
+game.GetService("RunService").Stepped.Connect(() => {
+	a = a + 0.01;
+	if (a >= 1) a = 0;
+	world_part.CFrame = new CFrame(a, a, a);
+	renderer.render();
+});
 
 export { part };
