@@ -74,6 +74,48 @@ do
 		return { X, Y }
 	end
 end
+local Renderer
+do
+	Renderer = setmetatable({}, {
+		__tostring = function()
+			return "Renderer"
+		end,
+	})
+	Renderer.__index = Renderer
+	function Renderer.new(...)
+		local self = setmetatable({}, Renderer)
+		return self:constructor(...) or self
+	end
+	function Renderer:constructor(camera)
+		self.camera = camera
+	end
+	function Renderer:point(x, y)
+		local point = Instance.new("TextBox")
+		point.Text = ""
+		point.Size = UDim2.fromScale(0.01, 0.01)
+		point.Position = UDim2.fromScale(x + 0.5, -y + 0.5)
+		point.BorderSizePixel = 0
+		point.BackgroundColor3 = Color3.new(1, 1, 1)
+		point.Visible = true
+		point.Parent = frame
+		return point
+	end
+	function Renderer:drawPath(p1, p2)
+		local line = self:point(0, 0)
+		local x1 = p1.Position.X.Scale
+		local y1 = p1.Position.Y.Scale
+		local x2 = p2.Position.X.Scale
+		local y2 = p2.Position.Y.Scale
+		local _vector2 = Vector2.new(x1, y1)
+		local _vector2_1 = Vector2.new(x2, y2)
+		local distance = (_vector2 - _vector2_1).Magnitude
+		line.Size = UDim2.fromScale(distance, 0.01)
+		line.Rotation = math.atan2(y2 - y1, x2 - x1) * (180 / math.pi)
+		line.Position = UDim2.fromScale((x1 + x2) * 0.5, (y1 + y2) * 0.5)
+		line.AnchorPoint = Vector2.new(0.5, 0.5)
+		return line
+	end
+end
 local camera = Camera.new()
 return {
 	part = part,

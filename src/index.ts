@@ -54,6 +54,37 @@ class Camera {
 	}
 }
 
+class Renderer {
+	camera: Camera;
+	constructor(camera: Camera) {
+		this.camera = camera;
+	}
+	private point(x: number, y: number) {
+		const point = new Instance("TextBox");
+		point.Text = "";
+		point.Size = UDim2.fromScale(0.01, 0.01);
+		point.Position = UDim2.fromScale(x + 0.5, -y + 0.5);
+		point.BorderSizePixel = 0;
+		point.BackgroundColor3 = new Color3(1, 1, 1);
+		point.Visible = true;
+		point.Parent = frame;
+		return point;
+	}
+	private drawPath(p1: TextBox, p2: TextBox) {
+		const line = this.point(0, 0);
+		const x1 = p1.Position.X.Scale;
+		const y1 = p1.Position.Y.Scale;
+		const x2 = p2.Position.X.Scale;
+		const y2 = p2.Position.Y.Scale;
+		const distance = new Vector2(x1, y1).sub(new Vector2(x2, y2)).Magnitude;
+		line.Size = UDim2.fromScale(distance, 0.01);
+		line.Rotation = math.atan2(y2 - y1, x2 - x1) * (180 / math.pi);
+		line.Position = UDim2.fromScale((x1 + x2) * 0.5, (y1 + y2) * 0.5);
+		line.AnchorPoint = new Vector2(0.5, 0.5);
+		return line;
+	}
+}
+
 const camera = new Camera();
 
 export { part };
