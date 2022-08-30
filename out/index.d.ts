@@ -1,1 +1,3 @@
-export declare function makeHello(name: string): string;
+/// <reference types="@rbxts/types" />
+declare const part: Part;
+export { part };
