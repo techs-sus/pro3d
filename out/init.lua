@@ -74,6 +74,7 @@ do
 		return { X, Y }
 	end
 end
+local vertices = { { 1, 1, -1 }, { 1, -1, -1 }, { -1, -1, -1 }, { -1, 1, -1 }, { 1, 1, 1 }, { 1, -1, 1 }, { -1, -1, 1 }, { -1, 1, 1 } }
 local Renderer
 do
 	Renderer = setmetatable({}, {
@@ -120,14 +121,36 @@ do
 		-- clear frame
 		frame:ClearAllChildren()
 		local descendants = frame:GetDescendants()
+		local renderVertices = {}
 		local _descendants = descendants
 		local _arg0 = function(v)
 			if v:IsA("Part") then
-				local vertices = {}
+				local size = v.Size
+				local _vertices = vertices
+				local _arg0_1 = function(vertice)
+					local _renderVertices = renderVertices
+					local _cFrame = part.CFrame
+					local _cFrame_1 = CFrame.new((size.X / 2) * vertice[2], (size.Y / 2) * vertice[3], (size.Z / 2) * vertice[4])
+					local _position = (_cFrame * _cFrame_1).Position
+					table.insert(_renderVertices, _position)
+				end
+				for _k, _v in ipairs(_vertices) do
+					_arg0_1(_v, _k - 1, _vertices)
+				end
 			end
 		end
 		for _k, _v in ipairs(_descendants) do
 			_arg0(_v, _k - 1, _descendants)
+		end
+		local _renderVertices = renderVertices
+		local _arg0_1 = function(v)
+			local _binding = self.camera:project(v.X, v.Y, v.Z, Vector3.zero, Vector3.zero)
+			local x = _binding[1]
+			local y = _binding[2]
+			self:point(x, y)
+		end
+		for _k, _v in ipairs(_renderVertices) do
+			_arg0_1(_v, _k - 1, _renderVertices)
 		end
 	end
 end

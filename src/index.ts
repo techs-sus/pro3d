@@ -53,7 +53,16 @@ class Camera {
 		return [X, Y];
 	}
 }
-
+let vertices = [
+	[1, 1, -1],
+	[1, -1, -1],
+	[-1, -1, -1],
+	[-1, 1, -1],
+	[1, 1, 1],
+	[1, -1, 1],
+	[-1, -1, 1],
+	[-1, 1, 1],
+];
 class Renderer {
 	public readonly camera: Camera;
 	public world: Folder;
@@ -87,12 +96,24 @@ class Renderer {
 	}
 	public render() {
 		// clear frame
+
 		frame.ClearAllChildren();
 		let descendants = frame.GetDescendants();
+		let renderVertices: Vector3[] = [];
 		descendants.forEach((v) => {
 			if (v.IsA("Part")) {
-				let vertices = [];
+				let size = v.Size;
+				vertices.forEach((vertice) => {
+					renderVertices.push(
+						part.CFrame.mul(new CFrame((size.X / 2) * vertice[1], (size.Y / 2) * vertice[2], (size.Z / 2) * vertice[3]))
+							.Position,
+					);
+				});
 			}
+		});
+		renderVertices.forEach((v) => {
+			let [x, y] = this.camera.project(v.X, v.Y, v.Z, Vector3.zero, Vector3.zero);
+			this.point(x, y);
 		});
 	}
 }
