@@ -28,7 +28,7 @@ part.Parent = container;
 container.Parent = script;
 
 class Camera {
-	position: Vector3 = new Vector3();
+	position: Vector3 = new Vector3(0, 1, -4);
 	rotation: Vector3 = new Vector3();
 	focalLength: number = 0.6;
 	public project(x: number, y: number, z: number, pos: Vector3, rot: Vector3): [number, number] {

@@ -48,7 +48,7 @@ do
 		return self:constructor(...) or self
 	end
 	function Camera:constructor()
-		self.position = Vector3.new()
+		self.position = Vector3.new(0, 1, -4)
 		self.rotation = Vector3.new()
 		self.focalLength = 0.6
 	end
