@@ -55,9 +55,11 @@ class Camera {
 }
 
 class Renderer {
-	camera: Camera;
-	constructor(camera: Camera) {
+	public readonly camera: Camera;
+	public world: Folder;
+	constructor(camera: Camera, world?: Folder | undefined) {
 		this.camera = camera;
+		this.world = world || new Instance("Folder");
 	}
 	private point(x: number, y: number) {
 		const point = new Instance("TextBox");
@@ -83,8 +85,23 @@ class Renderer {
 		line.AnchorPoint = new Vector2(0.5, 0.5);
 		return line;
 	}
+	public render() {
+		// clear frame
+		frame.ClearAllChildren();
+		let descendants = frame.GetDescendants();
+		descendants.forEach((v) => {
+			if (v.IsA("Part")) {
+				let vertices = [];
+			}
+		});
+	}
 }
 
 const camera = new Camera();
+const renderer = new Renderer(camera);
+let world_part = new Instance("Part");
+world_part.Size = Vector3.one;
+world_part.Parent = renderer.world;
+renderer.render();
 
 export { part };

@@ -86,8 +86,9 @@ do
 		local self = setmetatable({}, Renderer)
 		return self:constructor(...) or self
 	end
-	function Renderer:constructor(camera)
+	function Renderer:constructor(camera, world)
 		self.camera = camera
+		self.world = world or Instance.new("Folder")
 	end
 	function Renderer:point(x, y)
 		local point = Instance.new("TextBox")
@@ -115,8 +116,27 @@ do
 		line.AnchorPoint = Vector2.new(0.5, 0.5)
 		return line
 	end
+	function Renderer:render()
+		-- clear frame
+		frame:ClearAllChildren()
+		local descendants = frame:GetDescendants()
+		local _descendants = descendants
+		local _arg0 = function(v)
+			if v:IsA("Part") then
+				local vertices = {}
+			end
+		end
+		for _k, _v in ipairs(_descendants) do
+			_arg0(_v, _k - 1, _descendants)
+		end
+	end
 end
 local camera = Camera.new()
+local renderer = Renderer.new(camera)
+local world_part = Instance.new("Part")
+world_part.Size = Vector3.one
+world_part.Parent = renderer.world
+renderer:render()
 return {
 	part = part,
 }
