@@ -130,7 +130,7 @@ do
 				local _arg0_1 = function(vertice)
 					local _renderVertices = renderVertices
 					local _cFrame = part.CFrame
-					local _cFrame_1 = CFrame.new(size.X * vertice[1], size.Y * vertice[2], size.Z * vertice[3])
+					local _cFrame_1 = CFrame.new((size.X / 2) * vertice[1], (size.Y / 2) * vertice[2], (size.Z / 2) * vertice[3])
 					local _position = (_cFrame * _cFrame_1).Position
 					table.insert(_renderVertices, _position)
 				end
@@ -159,14 +159,14 @@ local renderer = Renderer.new(camera)
 local world_part = Instance.new("Part")
 world_part.Size = Vector3.one
 world_part.Parent = renderer.world
-local a = 0
-game:GetService("RunService").Stepped:Connect(function()
-	a = a + 0.01
-	if a >= 1 then
-		a = 0
+task.spawn(function()
+	while true do
+		local _cFrame = world_part.CFrame
+		local _cFrame_1 = CFrame.new(0.01, 0, 0)
+		world_part.CFrame = _cFrame * _cFrame_1
+		task.wait(1)
+		renderer:render()
 	end
-	world_part.CFrame = CFrame.new(a, a, a)
-	renderer:render()
 end)
 return {
 	part = part,
